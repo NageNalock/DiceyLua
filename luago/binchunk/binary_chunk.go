@@ -43,9 +43,38 @@ type Prototype struct {
 	MaxStackSize byte
 	Code []uint32
 	Constants []interface{}
-	Upvalues []UpValue
+	Upvalues []Upvalue
 	Protos []*Prototype
 	LineInfo []uint32
 	LocVars []LocVar
 	UpvalueNames []string
+}
+
+const (
+	// 常量表的 Tag 值
+	TAG_NIL = 0x00
+	TAG_BOOLEAN = 0x01
+	TAG_NUMBER = 0x03
+	TAG_INTEGER = 0x13
+	TAG_SHORT_STR = 0x04
+	TAG_LONG_STR = 0x14
+)
+
+type Upvalue struct {
+	Instack byte
+	Idx byte
+}
+
+type LocVar struct {
+	VarName string
+	StartPC uint32   // 起索引
+	EndPC uint32  // 止索引
+}
+
+func Undump(data []byte) *Prototype {
+	// 用于解析二进制 chunk
+	reader := &reader{data}
+	reader.checkHeader()  // 校验头部
+	reader.readByte()  // 跳过 Upvalue 数量
+	return reader.readProto("")  // 读取函数原型
 }
