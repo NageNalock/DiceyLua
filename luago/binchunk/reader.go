@@ -76,3 +76,53 @@ func (self *reader) readString() string {
 	bytes := self.readBytes(size - 1)
 	return string(bytes)
 }
+
+/*
+检查头部
+ */
+func (self *reader) checkHeader() {
+	if string(self.readBytes(4)) != LUA_SIGNATURE {
+		panic("not a precompiled chunk!")
+	}
+
+	if string(self.readBytes(6)) != LUAC_DATA {
+		panic("corrupted!")
+	}
+
+	if self.readLuaInteger() != LUAC_INT {
+		panic("endianness mismatch!")
+	}
+
+	if self.readLuaNumber() != LUAC_NUM {
+		panic("float format mismatch")
+	}
+
+    header := self.readByte()
+    if header != LUAC_VERSION {
+    	panic("version mismatch!")
+	}
+
+	if header != LUAC_FORMAT {
+		panic("format mismatch!")
+	}
+
+	if header != CINT_SIZE {
+		panic("int size mismatch!")
+	}
+
+	if header != CSZIET_SIZE {
+		panic("size_t size mismatch!")
+	}
+
+	if header != INSTRUCTION_SIZE {
+		panic("instruction size mismatch!")
+	}
+
+	if header != LUA_INTEGER_SIZE {
+		panic("lua_Integer size mismatch!")
+	}
+
+	if header != LUA_NUMBER_SIZE {
+		panic("lua_Number size mismatch!")
+	}
+}
