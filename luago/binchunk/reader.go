@@ -102,7 +102,7 @@ func (self *reader) checkHeader() {
     	panic("version mismatch!")
 	}
 
-	if header != LUAC_FORMAT {
+	if header != LuacFormat {
 		panic("format mismatch!")
 	}
 
@@ -125,4 +125,116 @@ func (self *reader) checkHeader() {
 	if header != LUA_NUMBER_SIZE {
 		panic("lua_Number size mismatch!")
 	}
+}
+
+/*
+读取函数原型
+ */
+func (self *reader) readProto(parentSource string) *Prototype {
+	source := self.readString()
+	if source == "" {
+		source = parentSource  // 只有主函数才有源文件名, 如果没有源文件名则不是主函数
+	}
+	return &Prototype{
+		Source:          source,
+		LineDefined:     self.readUnit32(),  // 起行号
+		LastLineDefined: self.readUnit32(),  // 止行号
+		NumParams:       self.readByte(),  // 固定参数个数
+		IsVararg:        self.readByte(),  // 是否是 Vararg 函数
+		MaxStackSize:    self.readByte(),  // 寄存器数量
+		Code:            self.readCode(),  // 指令表
+		Constants:       self.readConstants(),  // 常量表
+		Upvalues:        self.readUpvalues(),
+		Protos:          self.readProtos(source),  // 子函数原型
+		LineInfo:        self.readLineInfo(),  // 行号表
+		LocVars:         self.readLocVars(),  // 局部变量表
+		UpvalueNames:    self.readUpvalueNames(),
+	}
+}
+
+func (self *reader) readCode() []uint32 {
+	code := make([]uint32, self.readUnit32())
+	for i := range code {
+		code[i] = self.readUnit32()  // 每条指令 4 字节
+	}
+	return code
+}
+
+func (self *reader) readConstants() []interface{} {
+	constants := make([]interface{}, self.readUnit32())
+	for i := range constants {
+		constants[i] = self.readConstant()
+	}
+	return constants
+}
+
+func (self *reader) readConstant() interface{} {
+	switch self.readByte() {
+	case TAG_NIL:
+		return nil
+	case TAG_BOOLEAN:
+		return self.readByte() != 0
+	case TAG_INTEGER:
+		return self.readLuaInteger()
+	case TAG_NUMBER:
+		return self.readLuaNumber()
+	case TAG_SHORT_STR:
+		return self.readString()
+	case TAG_LONG_STR:
+		return self.readString()
+	default:
+		panic("read constant corrupted!")
+	}
+}
+
+func (self *reader) readUpvalues() []Upvalue {
+	upvalues := make([]Upvalue, self.readUnit32())
+	for i := range upvalues {
+		upvalues[i] = Upvalue{
+			Instack: self.readByte(),
+			Idx:     self.readByte(),
+		}
+	}
+
+	return upvalues
+}
+
+func (self *reader) readProtos(parentSource string) []*Prototype {
+	prototypes := make([]*Prototype, self.readUnit32())
+	for i := range prototypes {
+		prototypes[i] = self.readProto(parentSource)
+	}
+
+	return prototypes
+}
+
+func (self *reader) readLineInfo() []uint32 {
+	lienInfo := make([]uint32, self.readByte())
+	for i := range lienInfo {
+		lienInfo[i] = self.readUnit32()
+	}
+
+	return lienInfo
+}
+
+func (self *reader) readLocVars() []LocVar {
+	locVars := make([]LocVar, self.readUnit32())
+	for i := range locVars {
+		locVars[i] = LocVar{
+			VarName: self.readString(),
+			StartPC: self.readUnit32(),
+			EndPC:   self.readUnit32(),
+		}
+	}
+
+	return locVars
+}
+
+func (self *reader) readUpvalueNames() []string {
+	upvalueNames := make([]string, self.readUnit32())
+	for i := range upvalueNames {
+		upvalueNames[i] = self.readString()
+	}
+
+	return upvalueNames
 }
