@@ -2,7 +2,7 @@ package binchunk
 
 type binaryChunk struct {
 	header  // 头部
-	sizeUpvalues  // 主函数 upvalue 数量
+	// sizeUpvalues  // 主函数 upvalue 数量
 	mainFunc *Prototype // 主函数原型
 }
 
@@ -21,7 +21,7 @@ type header struct {
 }
 
 const (
-	LUA_SIGNATURE    = "\x1blua"
+	LUA_SIGNATURE    = "\x1bLua"
 	LUAC_VERSION     = 0x53
 	LuacFormat       = 0
 	LUAC_DATA        = "\x19\x93\r\n\x1a\n"
@@ -36,16 +36,16 @@ const (
 
 type Prototype struct {
 	Source string
-	LineDefined uint32
-	LastLineDefined uint32
+	LineDefined uint32  // 起行号
+	LastLineDefined uint32  // 止行号
 	NumParams byte
-	IsVararg byte
+	IsVararg byte  // 是否是 Var 参数函数
 	MaxStackSize byte
-	Code []uint32
+	Code []uint32  // 指令表
 	Constants []interface{}
 	Upvalues []Upvalue
 	Protos []*Prototype
-	LineInfo []uint32
+	LineInfo []uint32  // 行号表
 	LocVars []LocVar
 	UpvalueNames []string
 }
