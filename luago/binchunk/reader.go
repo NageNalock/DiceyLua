@@ -178,9 +178,7 @@ func (self *reader) readConstant() interface{} {
 		return self.readLuaInteger()
 	case TAG_NUMBER:
 		return self.readLuaNumber()
-	case TAG_SHORT_STR:
-		return self.readString()
-	case TAG_LONG_STR:
+	case TAG_SHORT_STR, TAG_LONG_STR:
 		return self.readString()
 	default:
 		panic("read constant corrupted!")
@@ -209,11 +207,9 @@ func (self *reader) readProtos(parentSource string) []*Prototype {
 }
 
 func (self *reader) readLineInfo() []uint32 {
-	lienInfo := make([]uint32, self.readByte())
+	lienInfo := make([]uint32, self.readUint32())
 	for i := range lienInfo {
 		lienInfo[i] = self.readUint32()
-		fmt.Println(lienInfo[i])
-		fmt.Println("-")
 	}
 
 	return lienInfo
