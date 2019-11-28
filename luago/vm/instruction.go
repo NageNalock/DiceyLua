@@ -6,6 +6,7 @@ type Instruction uint32
 从指令中提取操作码数
  */
 func (self Instruction) Opcode() int {
+	// fmt.Println(self)
 	return int(self & 0x3F)  // 3F = 111111, 32bit 的指令中, 低 6 为操作码, 剩余 25 位为操作数
 }
 

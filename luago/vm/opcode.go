@@ -6,9 +6,9 @@ const (
 	IABx
 	IAsBx
 	IAx
-	)
+)
 
-	const (
+const (
 		// 指令码, 共 47 条, 每条 6 比特
 		OP_MOVE = iota
 		OP_LOADK
@@ -59,7 +59,7 @@ const (
 		OP_EXTRAARG
 	)
 
-	const (
+const (
 		// 操作数
 		OpArgN = iota
 		OpArgU
@@ -67,7 +67,7 @@ const (
 		OpArgK
 	)
 
-	type opcode struct {
+type opcode struct {
 		// 指令信息
 		testFlag byte  // 测试命令, 其下一条指令会被跳过
 		setAFlag byte  // 是否设置寄存器 A 指令
@@ -77,7 +77,7 @@ const (
 		name string  // 指令名称
 	}
 
-	var opcodes = []opcode{
+var opcodes = []opcode{
 		// 完整的指令表, 其数组的位置标示指令代码
 	opcode{0, 1, OpArgR, OpArgN, IABC /* */, "MOVE    "}, // R(A) := R(B)
 	opcode{0, 1, OpArgK, OpArgN, IABx /* */, "LOADK   "}, // R(A) := Kst(Bx)
