@@ -2,6 +2,7 @@ package main
 
 import (
 	"DiceyLua/luago/binchunk"
+	. "DiceyLua/luago/vm"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -56,7 +57,53 @@ func printCode(f *binchunk.Prototype) {
 		if len(f.LineInfo) > 0 {
 			line = fmt.Sprintf("%d", f.LineInfo[pc])  // 格式化行号
 		}
-		fmt.Printf("\t%d\t[%s]\t0x%08x\n", pc + 1, line, c)
+		i := Instruction(c)
+
+		fmt.Printf("\t%d\t[%s]\t%s \t", pc + 1, line, i.OpName())
+		printOperands(i)
+		fmt.Printf("\n")
+	}
+}
+
+/**
+打印非 OpArgN 类型的操作数
+ */
+func printNotOpArgN(arg int) {
+	if arg > 0xFF {
+		fmt.Printf(" %d", -1-arg&0xFF)  // 表示常量表索引按照负数输出
+	} else {
+		fmt.Printf(" %d", arg)
+	}
+}
+
+func printOperands(i Instruction) {
+	switch i.OpMode() {
+	case IABC:
+		a, b, c := i.ABC()
+		fmt.Printf("%d", a)
+		if i.BMode() != OpArgN {  // OpArgN 类型的参数不打印
+			printNotOpArgN(b)
+		}
+
+		if i.CMode() != OpArgN {
+			printNotOpArgN(c)
+		}
+	case IABx:
+		a, bx := i.ABx()
+		fmt.Printf("%d", a)
+		if i.BMode() == OpArgK {
+			fmt.Printf(" %d", -1-bx)  // 表示常量表索引按照负数输出
+		} else if i.BMode() == OpArgU {
+			fmt.Printf(" %d", bx)
+		}
+	case IAsBx:
+		a, sbx := i.AsBx()
+		fmt.Printf("%d %d", a, sbx)
+	case IAx:
+		ax := i.Ax()
+		fmt.Printf("%d", -1-ax)
+	default:
+		fmt.Println("error operation mode: ", i.OpMode())
 	}
 }
 
