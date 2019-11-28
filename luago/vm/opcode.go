@@ -78,7 +78,7 @@ const (
 	}
 
 	var opcodes = []opcode{
-		// 完整的指令表
+		// 完整的指令表, 其数组的位置标示指令代码
 	opcode{0, 1, OpArgR, OpArgN, IABC /* */, "MOVE    "}, // R(A) := R(B)
 	opcode{0, 1, OpArgK, OpArgN, IABx /* */, "LOADK   "}, // R(A) := Kst(Bx)
 	opcode{0, 1, OpArgN, OpArgN, IABx /* */, "LOADKX  "}, // R(A) := Kst(extra arg)
