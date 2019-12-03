@@ -1,7 +1,7 @@
 package api
 
 const (
-	LUA_TNOE = iota - 1  // Lua 栈按索引取值时, 若是一个无效索引, 那么则返回该值
+	LUA_TNONE = iota - 1 // Lua 栈按索引取值时, 若是一个无效索引, 那么则返回该值
 	LUA_TNIL
 	LUA_TBOOLEAN
 	LUA_TLIGHTUSERDATA

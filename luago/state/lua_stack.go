@@ -70,13 +70,14 @@ func (self *luaStack) get(idx int) luaValue {
 	if absIdx > 0 && absIdx <= self.top {
 		return self.slots[absIdx - 1]
 	}
+
 	return nil
 }
 
 /**
 写值
  */
-func (self *luaStack) put(idx int, val luaValue) {
+func (self *luaStack) set(idx int, val luaValue) {
 	absIndex := self.absIndex(idx)
 	if absIndex > 0 && absIndex <= self.top {
 		self.slots[absIndex - 1] = val
@@ -84,4 +85,13 @@ func (self *luaStack) put(idx int, val luaValue) {
 	}
 
 	panic("invalid index!")
+}
+
+func (self *luaStack) reverse(from, to int) {
+	slots := self.slots
+	for from < to {
+		slots[from], slots[to] = slots[to], slots[from]
+		from++
+		to--
+	}
 }
