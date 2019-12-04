@@ -3,7 +3,7 @@ package state
 import . "DiceyLua/luago/api"
 
 type luaValue interface {
-	// 空接口表示各种不同类型的 Lua 值
+	// 空接口表示各种不同类型的 Lua 值 todo
 }
 
 func typeOf(val luaValue) LuaType {
