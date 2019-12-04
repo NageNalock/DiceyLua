@@ -2,7 +2,7 @@ package binchunk
 
 type binaryChunk struct {
 	header  // 头部
-	// sizeUpvalues  // 主函数 upvalue 数量
+	// sizeUpvalues  // 主函数 upvalue 数量 todo
 	mainFunc *Prototype // 主函数原型
 }
 

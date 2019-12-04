@@ -1,7 +1,9 @@
 package main
 
 import (
+	. "DiceyLua/luago/api"
 	"DiceyLua/luago/binchunk"
+	. "DiceyLua/luago/state"
 	. "DiceyLua/luago/vm"
 	"fmt"
 	"io/ioutil"
@@ -9,6 +11,57 @@ import (
 )
 
 func main() {
+	// todo 以后改成单测框架
+	ls := New()
+
+	ls.PushBoolean(true)
+	printStack(ls)
+
+	ls.PushInteger(10)
+	printStack(ls)
+
+	ls.PushNil()
+	printStack(ls)
+
+	ls.PushString("hello")
+	printStack(ls)
+
+	ls.PushValue(-4)
+	printStack(ls)
+
+	ls.Replace(3)
+	printStack(ls)
+
+	ls.SetTop(6)
+	printStack(ls)
+
+	ls.Remove(-3)
+	printStack(ls)
+
+	ls.SetTop(-5)
+	printStack(ls)
+}
+
+func printStack(ls LuaState) {
+	// todo 写入栈的方法
+	top := ls.GetTop()
+	for i := 1; i <= top; i++ {
+		t := ls.Type(i)
+		switch t {
+		case LUA_TBOOLEAN:
+			fmt.Printf("[%t]", ls.ToBoolean(i))
+		case LUA_TNUMBER:
+			fmt.Printf("[%g]", ls.ToNumber(i))
+		case LUA_TSTRING:
+			fmt.Printf("[%q]", ls.ToString(i))
+		default:
+			fmt.Printf("[%s]", ls.TypeName(t))
+		}
+	}
+	fmt.Println()
+}
+
+func decompilerMain() {
 	// 测试二进制 chunk 部分是否正常
 	if len(os.Args) > 1{
 		data, err := ioutil.ReadFile(os.Args[1])
