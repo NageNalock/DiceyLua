@@ -52,3 +52,11 @@ func ShiftLeft(a, n int64) int64 {
 		return ShiftRight(a, -n)
 	}
 }
+
+/**
+浮点数转换为整数, 当未丢失精度时 bool 表示转换成功, 否则为失败
+ */
+func FloatToInteger(f float64) (int64, bool) {
+	i := int64(f)
+	return i, float64(i)  == f
+}
