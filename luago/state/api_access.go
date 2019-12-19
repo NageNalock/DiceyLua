@@ -56,16 +56,16 @@ func (self *luaState) IsNoneOrNil(idx int) bool {
 	return self.Type(idx) <= LUA_TNIL
 }
 
-func (self *luaState) isBoolean(idx int) bool {
+func (self *luaState) IsBoolean(idx int) bool {
 	return self.Type(idx) == LUA_TBOOLEAN
 }
 
-func (self *luaState) isString(idx int) bool {
+func (self *luaState) IsString(idx int) bool {
 	t := self.Type(idx)
 	return t == LUA_TSTRING || t == LUA_TNUMBER
 }
 
-func (self *luaState) isNumber(idx int) bool {
+func (self *luaState) IsNumber(idx int) bool {
 	_, ok := self.ToIntegerX(idx)
 	return ok
 }

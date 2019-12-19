@@ -1,6 +1,8 @@
 package api
 
 type LuaType = int
+type ArithOp = int
+type CompareOp = int
 
 type LuaState interface {
 	/* 基础栈操作方法 */
