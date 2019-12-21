@@ -56,16 +56,16 @@ func (self *luaState) IsNoneOrNil(idx int) bool {
 	return self.Type(idx) <= LUA_TNIL
 }
 
-func (self *luaState) isBoolean(idx int) bool {
+func (self *luaState) IsBoolean(idx int) bool {
 	return self.Type(idx) == LUA_TBOOLEAN
 }
 
-func (self *luaState) isString(idx int) bool {
+func (self *luaState) IsString(idx int) bool {
 	t := self.Type(idx)
 	return t == LUA_TSTRING || t == LUA_TNUMBER
 }
 
-func (self *luaState) isNumber(idx int) bool {
+func (self *luaState) IsNumber(idx int) bool {
 	_, ok := self.ToIntegerX(idx)
 	return ok
 }
@@ -111,14 +111,7 @@ func (self *luaState) ToNumber(idx int) float64 {
  */
 func (self *luaState) ToNumberX(idx int) (float64, bool) {
 	val := self.stack.get(idx)
-	switch x := val.(type) {
-	case float64:
-		return x, true
-	case int64:
-		return float64(x), true
-	default:
-		return 0, false
-	}
+	return convertToFloat(val)
 }
 
 func (self *luaState) ToInteger(idx int) int64 {
@@ -128,8 +121,7 @@ func (self *luaState) ToInteger(idx int) int64 {
 
 func (self *luaState) ToIntegerX(idx int) (int64, bool) {
 	val := self.stack.get(idx)
-	i, ok := val.(int64)  // todo 类型转换判断
-	return i, ok
+	return convertToInteger(val)
 }
 
 func (self *luaState) ToString(idx int) string {

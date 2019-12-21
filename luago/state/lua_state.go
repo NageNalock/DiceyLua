@@ -4,20 +4,7 @@ type luaState struct {
 	stack *luaStack
 }
 
-
 /* TODO 补齐剩余方法 */
-func (self *luaState) IsBoolean(idx int) bool {
-	panic("implement me")
-}
-
-func (self *luaState) IsNumber(idx int) bool {
-	panic("implement me")
-}
-
-func (self *luaState) IsString(idx int) bool {
-	panic("implement me")
-}
-
 func (self *luaState) IsTable(idx int) bool {
 	panic("implement me")
 }
